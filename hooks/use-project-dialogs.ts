@@ -79,10 +79,13 @@ export function useProjectDialogs(): ProjectDialogsHook {
   function handleCreate() {
     const trimmed = createName.trim()
     if (!trimmed) return
+    const slug = toSlug(trimmed)
+    if (!slug) return
+    if (projects.some((p) => p.slug === slug)) return
     setLoading(true)
     setProjects((prev) => [
       ...prev,
-      { id: Date.now().toString(), name: trimmed, slug: toSlug(trimmed), isOwner: true },
+      { id: Date.now().toString(), name: trimmed, slug, isOwner: true },
     ])
     setLoading(false)
     close()
@@ -91,11 +94,14 @@ export function useProjectDialogs(): ProjectDialogsHook {
   function handleRename() {
     const trimmed = renameName.trim()
     if (!trimmed || !targetProject) return
+    const slug = toSlug(trimmed)
+    if (!slug) return
+    if (projects.some((p) => p.slug === slug && p.id !== targetProject.id)) return
     setLoading(true)
     setProjects((prev) =>
       prev.map((p) =>
         p.id === targetProject.id
-          ? { ...p, name: trimmed, slug: toSlug(trimmed) }
+          ? { ...p, name: trimmed, slug }
           : p
       )
     )

@@ -11,7 +11,6 @@ import type { MockProject } from "@/hooks/use-project-dialogs"
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
-  className?: string
 }
 
 function ProjectItem({
@@ -27,7 +26,7 @@ function ProjectItem({
     <div className="group flex items-center justify-between rounded-xl px-3 py-2 hover:bg-subtle cursor-pointer">
       <span className="text-sm text-copy-secondary truncate flex-1">{project.name}</span>
       {showActions && (
-        <div className="flex items-center gap-0.5 shrink-0 ml-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity">
+        <div className="flex items-center gap-0.5 shrink-0 ml-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="icon"
@@ -58,7 +57,7 @@ function ProjectItem({
   )
 }
 
-export function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
+export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
   const { projects, openCreate } = useProjectDialogsContext()
 
   const myProjects = projects.filter((p) => p.isOwner)
@@ -66,23 +65,18 @@ export function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarPro
 
   return (
     <>
-      {/* Mobile backdrop scrim */}
       {isOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 md:hidden"
           onClick={onClose}
-          aria-hidden
+          aria-hidden="true"
         />
       )}
 
       <aside
-        id="project-sidebar"
-        aria-hidden={!isOpen}
-        inert={!isOpen}
         className={cn(
           "fixed left-0 top-12 bottom-0 z-30 flex w-72 flex-col border-r border-border-default bg-elevated transition-transform duration-200",
-          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none",
-          className
+          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
         )}
       >
         <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
@@ -144,7 +138,7 @@ export function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarPro
         </div>
 
         <div className="border-t border-border-default px-3 py-3">
-          <Button className="w-full gap-2" variant="default" onClick={openCreate}>
+          <Button className="w-full gap-2" onClick={openCreate}>
             <Plus className="h-4 w-4" />
             New Project
           </Button>

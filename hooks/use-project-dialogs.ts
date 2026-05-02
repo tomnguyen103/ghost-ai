@@ -28,8 +28,8 @@ export interface ProjectDialogsHook {
   openRename: (project: MockProject) => void
   openDelete: (project: MockProject) => void
   close: () => void
-  setCreateName: (name: string) => void
-  setRenameName: (name: string) => void
+  setCreateName: (value: string) => void
+  setRenameName: (value: string) => void
   handleCreate: () => void
   handleRename: () => void
   handleDelete: () => void
@@ -81,7 +81,6 @@ export function useProjectDialogs(): ProjectDialogsHook {
     if (!trimmed) return
     const slug = toSlug(trimmed)
     if (!slug) return
-    if (projects.some((p) => p.slug === slug)) return
     setLoading(true)
     setProjects((prev) => [
       ...prev,
@@ -96,14 +95,9 @@ export function useProjectDialogs(): ProjectDialogsHook {
     if (!trimmed || !targetProject) return
     const slug = toSlug(trimmed)
     if (!slug) return
-    if (projects.some((p) => p.slug === slug && p.id !== targetProject.id)) return
     setLoading(true)
     setProjects((prev) =>
-      prev.map((p) =>
-        p.id === targetProject.id
-          ? { ...p, name: trimmed, slug }
-          : p
-      )
+      prev.map((p) => (p.id === targetProject.id ? { ...p, name: trimmed, slug } : p))
     )
     setLoading(false)
     close()

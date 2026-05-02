@@ -10,8 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { toSlug } from "@/hooks/use-project-dialogs"
-import type { MockProject } from "@/hooks/use-project-dialogs"
+import { toSlug, type MockProject } from "@/hooks/use-project-dialogs"
 
 interface RenameProjectDialogProps {
   open: boolean
@@ -45,16 +44,17 @@ export function RenameProjectDialog({
         </DialogHeader>
 
         <Input
+          autoFocus
           placeholder="Project name"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && name.trim() && toSlug(name) && !loading) onConfirm()
-          }}          autoFocus
+          }}
           className="bg-subtle border-border-default text-copy-primary placeholder:text-copy-faint"
         />
 
-        <DialogFooter className="gap-2 sm:gap-2">
+        <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             Cancel
           </Button>

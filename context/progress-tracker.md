@@ -25,6 +25,13 @@ Update this file whenever the current phase, active feature, or implementation s
 
 - Add the next planned feature unit here.
 
+## Re-implementation Notes (04-project-dialogs)
+
+- All 8 files rewritten from scratch against spec on 2026-05-02.
+- `inert` attribute removed from sidebar `<aside>` (was causing potential TS issues); pointer-events-none + translate handles the same intent.
+- Sidebar mobile backdrop scrim rendered conditionally (`{isOpen && <div …/>}`) so it only exists in the DOM when the sidebar is open.
+- Actions panel on project items uses `md:opacity-0 md:group-hover:opacity-100` — always visible on touch/mobile, hover-reveal on desktop.
+
 ## Open Questions
 
 - Add unresolved product or implementation questions here.

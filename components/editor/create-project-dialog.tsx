@@ -39,15 +39,16 @@ export function CreateProjectDialog({
 
         <div className="flex flex-col gap-3">
           <Input
+            autoFocus
             placeholder="Project name"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !loading && name.trim() && slug) onConfirm()
-            }}            autoFocus
+            }}
             className="bg-subtle border-border-default text-copy-primary placeholder:text-copy-faint"
           />
-          <p className="text-xs text-copy-muted font-mono">
+          <p className="text-xs font-mono text-copy-muted">
             {slug ? (
               <>
                 <span className="text-copy-faint">ghost.ai/</span>
@@ -59,7 +60,7 @@ export function CreateProjectDialog({
           </p>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-2">
+        <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             Cancel
           </Button>

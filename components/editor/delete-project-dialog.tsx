@@ -38,7 +38,7 @@ export function DeleteProjectDialog({
           )}
         </DialogHeader>
 
-        <DialogFooter className="gap-2 sm:gap-2">
+        <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             Cancel
           </Button>

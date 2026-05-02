@@ -27,7 +27,7 @@ function ProjectItem({
     <div className="group flex items-center justify-between rounded-xl px-3 py-2 hover:bg-subtle cursor-pointer">
       <span className="text-sm text-copy-secondary truncate flex-1">{project.name}</span>
       {showActions && (
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1">
+        <div className="flex items-center gap-0.5 shrink-0 ml-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="icon"
@@ -78,6 +78,7 @@ export function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarPro
       <aside
         id="project-sidebar"
         aria-hidden={!isOpen}
+        inert={!isOpen}
         className={cn(
           "fixed left-0 top-12 bottom-0 z-30 flex w-72 flex-col border-r border-border-default bg-elevated transition-transform duration-200",
           isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none",

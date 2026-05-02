@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "clerk-nuxt-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frameworks/clerk-nuxt-patterns/SKILL.md",
+      "computedHash": "25c785bbf5174a654daa7aa8d04b9f22a0cab9eb667f1e04ed071f49a528dad6"
+    }
+  }
+}

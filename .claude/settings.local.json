@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx shadcn@latest add button card dialog input tabs textarea scroll-area --yes --overwrite)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

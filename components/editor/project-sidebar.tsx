@@ -1,9 +1,12 @@
 "use client"
 
-import { Plus, X } from "lucide-react"
+import { Pencil, Plus, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
+import { useProjectDialogsContext } from "./project-dialogs-context"
+import type { MockProject } from "@/hooks/use-project-dialogs"
 
 interface ProjectSidebarProps {
   isOpen: boolean
@@ -11,61 +14,141 @@ interface ProjectSidebarProps {
   className?: string
 }
 
-export function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
+function ProjectItem({
+  project,
+  showActions,
+}: {
+  project: MockProject
+  showActions: boolean
+}) {
+  const { openRename, openDelete } = useProjectDialogsContext()
+
   return (
-    <aside
-      id="project-sidebar"
-      aria-hidden={!isOpen}
-      className={cn(
-        "fixed left-0 top-12 bottom-0 z-30 flex w-72 flex-col border-r border-border-default bg-elevated transition-transform duration-200",
-        isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none",
-        className
+    <div className="group flex items-center justify-between rounded-xl px-3 py-2 hover:bg-subtle cursor-pointer">
+      <span className="text-sm text-copy-secondary truncate flex-1">{project.name}</span>
+      {showActions && (
+        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-copy-muted hover:text-copy-primary"
+            onClick={(e) => {
+              e.stopPropagation()
+              openRename(project)
+            }}
+            aria-label={`Rename ${project.name}`}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-copy-muted hover:text-error"
+            onClick={(e) => {
+              e.stopPropagation()
+              openDelete(project)
+            }}
+            aria-label={`Delete ${project.name}`}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       )}
-    >
-      <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
-        <span className="text-sm font-semibold text-copy-primary">Projects</span>
-        <Button
-          variant="ghost"
-          size="icon"
+    </div>
+  )
+}
+
+export function ProjectSidebar({ isOpen, onClose, className }: ProjectSidebarProps) {
+  const { projects, openCreate } = useProjectDialogsContext()
+
+  const myProjects = projects.filter((p) => p.isOwner)
+  const sharedProjects = projects.filter((p) => !p.isOwner)
+
+  return (
+    <>
+      {/* Mobile backdrop scrim */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/50 md:hidden"
           onClick={onClose}
-          className="h-7 w-7 text-copy-muted hover:text-copy-primary"
-          aria-label="Close sidebar"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
+          aria-hidden
+        />
+      )}
 
-      <div className="flex flex-1 flex-col overflow-hidden px-3 py-3">
-        <Tabs defaultValue="my-projects" className="flex flex-1 flex-col">
-          <TabsList className="w-full bg-subtle">
-            <TabsTrigger value="my-projects" className="flex-1 text-xs">
-              My Projects
-            </TabsTrigger>
-            <TabsTrigger value="shared" className="flex-1 text-xs">
-              Shared
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent
-            value="my-projects"
-            className="flex flex-1 items-center justify-center"
+      <aside
+        id="project-sidebar"
+        aria-hidden={!isOpen}
+        className={cn(
+          "fixed left-0 top-12 bottom-0 z-30 flex w-72 flex-col border-r border-border-default bg-elevated transition-transform duration-200",
+          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none",
+          className
+        )}
+      >
+        <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
+          <span className="text-sm font-semibold text-copy-primary">Projects</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-7 w-7 text-copy-muted hover:text-copy-primary"
+            aria-label="Close sidebar"
           >
-            <p className="text-sm text-copy-muted">No projects yet.</p>
-          </TabsContent>
-          <TabsContent
-            value="shared"
-            className="flex flex-1 items-center justify-center"
-          >
-            <p className="text-sm text-copy-muted">No shared projects.</p>
-          </TabsContent>
-        </Tabs>
-      </div>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
 
-      <div className="border-t border-border-default px-3 py-3">
-        <Button className="w-full gap-2" variant="default">
-          <Plus className="h-4 w-4" />
-          New Project
-        </Button>
-      </div>
-    </aside>
+        <div className="flex flex-1 flex-col overflow-hidden px-3 py-3">
+          <Tabs defaultValue="my-projects" className="flex flex-1 flex-col">
+            <TabsList className="w-full bg-subtle">
+              <TabsTrigger value="my-projects" className="flex-1 text-xs">
+                My Projects
+              </TabsTrigger>
+              <TabsTrigger value="shared" className="flex-1 text-xs">
+                Shared
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="my-projects" className="flex flex-1 flex-col mt-2 overflow-hidden">
+              {myProjects.length === 0 ? (
+                <div className="flex flex-1 items-center justify-center">
+                  <p className="text-sm text-copy-muted">No projects yet.</p>
+                </div>
+              ) : (
+                <ScrollArea className="flex-1">
+                  <div className="flex flex-col gap-0.5">
+                    {myProjects.map((project) => (
+                      <ProjectItem key={project.id} project={project} showActions />
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+            </TabsContent>
+
+            <TabsContent value="shared" className="flex flex-1 flex-col mt-2 overflow-hidden">
+              {sharedProjects.length === 0 ? (
+                <div className="flex flex-1 items-center justify-center">
+                  <p className="text-sm text-copy-muted">No shared projects.</p>
+                </div>
+              ) : (
+                <ScrollArea className="flex-1">
+                  <div className="flex flex-col gap-0.5">
+                    {sharedProjects.map((project) => (
+                      <ProjectItem key={project.id} project={project} showActions={false} />
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        <div className="border-t border-border-default px-3 py-3">
+          <Button className="w-full gap-2" variant="default" onClick={openCreate}>
+            <Plus className="h-4 w-4" />
+            New Project
+          </Button>
+        </div>
+      </aside>
+    </>
   )
 }

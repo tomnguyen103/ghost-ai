@@ -43,8 +43,8 @@ export function CreateProjectDialog({
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             onKeyDown={(e) => {
-          if (e.key === "Enter" && !loading && name.trim()) onConfirm() }}
-            autoFocus
+              if (e.key === "Enter" && !loading && name.trim() && slug) onConfirm()
+            }}            autoFocus
             className="bg-subtle border-border-default text-copy-primary placeholder:text-copy-faint"
           />
           <p className="text-xs text-copy-muted font-mono">
@@ -63,7 +63,7 @@ export function CreateProjectDialog({
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} disabled={!name.trim() || loading}>
+          <Button onClick={onConfirm} disabled={!name.trim() || !slug || loading}>
             Create Project
           </Button>
         </DialogFooter>

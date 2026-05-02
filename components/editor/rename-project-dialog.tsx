@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { toSlug } from "@/hooks/use-project-dialogs"
 import type { MockProject } from "@/hooks/use-project-dialogs"
 
 interface RenameProjectDialogProps {
@@ -48,9 +49,8 @@ export function RenameProjectDialog({
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && name.trim() && !loading) onConfirm()
-          }}
-          autoFocus
+            if (e.key === "Enter" && name.trim() && toSlug(name) && !loading) onConfirm()
+          }}          autoFocus
           className="bg-subtle border-border-default text-copy-primary placeholder:text-copy-faint"
         />
 
@@ -58,7 +58,7 @@ export function RenameProjectDialog({
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} disabled={!name.trim() || loading}>
+          <Button onClick={onConfirm} disabled={!name.trim() || !toSlug(name) || loading}>
             Rename
           </Button>
         </DialogFooter>

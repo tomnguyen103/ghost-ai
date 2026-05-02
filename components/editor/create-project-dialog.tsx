@@ -42,7 +42,8 @@ export function CreateProjectDialog({
             placeholder="Project name"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && onConfirm()}
+            onKeyDown={(e) => {
+          if (e.key === "Enter" && !loading && name.trim()) onConfirm() }}
             autoFocus
             className="bg-subtle border-border-default text-copy-primary placeholder:text-copy-faint"
           />

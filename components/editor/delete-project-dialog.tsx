@@ -9,11 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { MockProject } from "@/hooks/use-project-dialogs"
+import type { SidebarProject } from "@/lib/projects"
 
 interface DeleteProjectDialogProps {
   open: boolean
-  project: MockProject | null
+  project: SidebarProject | null
   loading: boolean
   onConfirm: () => void
   onClose: () => void

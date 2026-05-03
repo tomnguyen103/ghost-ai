@@ -10,11 +10,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { toSlug, type MockProject } from "@/hooks/use-project-dialogs"
+import { toSlug } from "@/hooks/use-project-actions"
+import type { SidebarProject } from "@/lib/projects"
 
 interface RenameProjectDialogProps {
   open: boolean
-  project: MockProject | null
+  project: SidebarProject | null
   name: string
   loading: boolean
   onNameChange: (value: string) => void

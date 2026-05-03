@@ -16,6 +16,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - `02-editor.md` — `components/editor/editor-navbar.tsx` (fixed navbar, sidebar toggle with PanelLeftOpen/PanelLeftClose, dark background + bottom border), `components/editor/project-sidebar.tsx` (floating overlay, slides from left, My Projects/Shared tabs with empty states, New Project button), dialog pattern confirmed ready via existing shadcn Dialog primitives.
 - `03-auth.md` — `proxy.ts` at project root with `clerkMiddleware` (all routes protected except sign-in/sign-up), `ClerkProvider` wrapping root layout with Clerk `dark` theme (`@clerk/ui/themes`) and CSS variable overrides, `app/sign-in/[[...sign-in]]/page.tsx` and `app/sign-up/[[...sign-up]]/page.tsx` with 40/60 two-panel layout (left: `bg-surface` panel with circular `G` logo badge, large `text-5xl` headline, description paragraph, three icon-box feature rows with Lucide icons, copyright footer; right: `bg-base` with centered Clerk form; mobile shows form only), shared panel extracted to `components/auth/auth-left-panel.tsx`, `app/page.tsx` redirects authenticated users to `/editor` and unauthenticated to `/sign-in`, `UserButton` added to editor navbar right section.
 - `04-project-dialogs.md` — Editor home screen (`app/editor/page.tsx`) with heading, description, and `New Project` button. `useProjectDialogs` hook (`hooks/use-project-dialogs.ts`) owns dialog/form/loading state and mock project data. `ProjectDialogsContext` shares state between sidebar and page. Three dialogs: `CreateProjectDialog` (name input + live slug preview), `RenameProjectDialog` (prefilled, auto-focus, Enter submits), `DeleteProjectDialog` (destructive confirm only). `ProjectSidebar` updated with project list, hover-reveal Rename/Delete actions for owned projects only, mobile backdrop scrim. All dialogs rendered from `EditorShell`. Slug validation guards empty-slug edge case (e.g. `"---"`) in hook handlers and dialog button disabled state. Zero TypeScript errors.
+- `05-prisma.md` — `prisma/models/project.prisma` with `Status` enum (`DRAFT`, `ARCHIVED`), `Project` model (`id`, `ownerId`, `name`, `description?`, `status`, `canvasJsonPath?`, timestamps, `@@index([ownerId])`, `@@index([createdAt])`), and `ProjectCollaborator` model (`id`, `projectId` → `Project` cascade delete, `email`, `createdAt`, `@@unique([projectId, email])`, `@@index([email])`, `@@index([projectId, createdAt])`). `lib/prisma.ts` singleton branches on `DATABASE_URL`: `prisma+postgres://` uses Accelerate (`@prisma/extension-accelerate`), otherwise `@prisma/adapter-pg`; global-cached in development. Migrations applied, client generated to `app/generated/prisma`, `npm run build` passes.
 
 ## In Progress
 
@@ -24,6 +25,7 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Next Up
 
 - Add the next planned feature unit here.
+
 
 ## Re-implementation Notes (04-project-dialogs)
 

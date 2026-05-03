@@ -11,7 +11,9 @@
       "Bash(npx next *)",
       "Bash(npx eslint *)",
       "Bash(git merge *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash(Select-String \"prisma\")",
+      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\prisma\\\\models\" -Force)"
     ]
   }
 }

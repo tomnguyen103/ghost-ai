@@ -54,3 +54,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - `components.json` uses `style: "default"`, `rsc: true`, `tsx: true`, `baseColor: "neutral"`, `cssVariables: true`.
 - shadcn version pinned at 4.6.0 (installed by npx).
 - Next.js 16: `middleware.ts` is deprecated, renamed to `proxy.ts`; function export renamed from `middleware` to `proxy`.
+- `useProjectActions` hook now captures errors in state (`error: string | null`) and exposes them via the hook. Each handler (`handleCreate`, `handleRename`, `handleDelete`) now calls `setError(message)` on failure instead of silent `console.error()`. Error is cleared on dialog open and on successful close. Dialog components should render error messages conditionally.

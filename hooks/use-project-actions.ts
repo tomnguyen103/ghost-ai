@@ -13,6 +13,7 @@ export interface ProjectActionsHook {
   createRoomId: string
   renameName: string
   loading: boolean
+  error: string | null
   openCreate: () => void
   openRename: (project: SidebarProject) => void
   openDelete: (project: SidebarProject) => void
@@ -43,6 +44,7 @@ export function useProjectActions(): ProjectActionsHook {
   const [createName, setCreateName] = useState("")
   const [renameName, setRenameName] = useState("")
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const createRoomId = toSlug(createName)
 
@@ -67,29 +69,34 @@ export function useProjectActions(): ProjectActionsHook {
     setTargetProject(null)
     setCreateName("")
     setRenameName("")
+    setError(null)
   }
 
   function handleCreate() {
     const trimmed = createName.trim()
     if (!trimmed) return
+
     const roomId = toSlug(trimmed)
     if (!roomId) return
 
-    setLoading(true)
-    fetch("/api/projects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: trimmed, id: roomId }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to create project")
-        return res.json()
-      })
-      .then(() => {
-        close()
-        router.push(`/editor/${roomId}`)
-      })
-      .catch((err) => console.error(err))
+     setLoading(true)
+     fetch("/api/projects", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+
+      body: JSON.stringify({ name: trimmed }),
+     })
+       .then((res) => {
+         if (!res.ok) throw new Error("Failed to create project")
+         return res.json()
+       })
+
+      .then(({ project }) => {
+         close()
+
+        router.push(`/editor/${project.id}`)
+       })
+      .catch((err) => setError(err instanceof Error ? err.message : "An error occurred"))
       .finally(() => setLoading(false))
   }
 
@@ -98,6 +105,7 @@ export function useProjectActions(): ProjectActionsHook {
     if (!trimmed || !targetProject) return
 
     setLoading(true)
+    setError(null)
     fetch(`/api/projects/${targetProject.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -108,7 +116,7 @@ export function useProjectActions(): ProjectActionsHook {
         close()
         router.refresh()
       })
-      .catch((err) => console.error(err))
+      .catch((err) => setError(err instanceof Error ? err.message : "An error occurred"))
       .finally(() => setLoading(false))
   }
 
@@ -117,6 +125,7 @@ export function useProjectActions(): ProjectActionsHook {
     const isActive = pathname === `/editor/${targetProject.id}`
 
     setLoading(true)
+    setError(null)
     fetch(`/api/projects/${targetProject.id}`, { method: "DELETE" })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete project")
@@ -127,7 +136,7 @@ export function useProjectActions(): ProjectActionsHook {
           router.refresh()
         }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => setError(err instanceof Error ? err.message : "An error occurred"))
       .finally(() => setLoading(false))
   }
 
@@ -138,6 +147,7 @@ export function useProjectActions(): ProjectActionsHook {
     createRoomId,
     renameName,
     loading,
+    error,
     openCreate,
     openRename,
     openDelete,

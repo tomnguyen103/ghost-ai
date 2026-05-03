@@ -13,7 +13,7 @@ Create REST endpoints for:
 Use the authenticated Clerk user ID as `ownerID`.
 
 When creating:
-- Default missing prject name to `Untitled Project`
+- Default missing project name to `Untitled Project`
 - Use the schema's existing ID strategy, do not add sequential IDs
 
 Security:

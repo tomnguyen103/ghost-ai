@@ -6,18 +6,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { useProjectDialogsContext } from "./project-dialogs-context"
-import type { MockProject } from "@/hooks/use-project-dialogs"
+import type { SidebarProject } from "@/lib/projects"
 
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
+  ownedProjects: SidebarProject[]
+  sharedProjects: SidebarProject[]
 }
 
 function ProjectItem({
   project,
   showActions,
 }: {
-  project: MockProject
+  project: SidebarProject
   showActions: boolean
 }) {
   const { openRename, openDelete } = useProjectDialogsContext()
@@ -57,11 +59,8 @@ function ProjectItem({
   )
 }
 
-export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
-  const { projects, openCreate } = useProjectDialogsContext()
-
-  const myProjects = projects.filter((p) => p.isOwner)
-  const sharedProjects = projects.filter((p) => !p.isOwner)
+export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects }: ProjectSidebarProps) {
+  const { openCreate } = useProjectDialogsContext()
 
   return (
     <>
@@ -104,14 +103,14 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
             </TabsList>
 
             <TabsContent value="my-projects" className="flex flex-1 flex-col mt-2 overflow-hidden">
-              {myProjects.length === 0 ? (
+              {ownedProjects.length === 0 ? (
                 <div className="flex flex-1 items-center justify-center">
                   <p className="text-sm text-copy-muted">No projects yet.</p>
                 </div>
               ) : (
                 <ScrollArea className="flex-1">
                   <div className="flex flex-col gap-0.5">
-                    {myProjects.map((project) => (
+                    {ownedProjects.map((project) => (
                       <ProjectItem key={project.id} project={project} showActions />
                     ))}
                   </div>

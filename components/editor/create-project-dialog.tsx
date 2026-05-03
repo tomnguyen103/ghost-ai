@@ -9,11 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { toSlug } from "@/hooks/use-project-dialogs"
+import { toSlug } from "@/hooks/use-project-actions"
 
 interface CreateProjectDialogProps {
   open: boolean
   name: string
+  roomId: string
   loading: boolean
   onNameChange: (value: string) => void
   onConfirm: () => void
@@ -23,6 +24,7 @@ interface CreateProjectDialogProps {
 export function CreateProjectDialog({
   open,
   name,
+  roomId,
   loading,
   onNameChange,
   onConfirm,
@@ -49,13 +51,13 @@ export function CreateProjectDialog({
             className="bg-subtle border-border-default text-copy-primary placeholder:text-copy-faint"
           />
           <p className="text-xs font-mono text-copy-muted">
-            {slug ? (
+            {roomId ? (
               <>
-                <span className="text-copy-faint">ghost.ai/</span>
-                <span className="text-copy-secondary">{slug}</span>
+                <span className="text-copy-faint">Room: </span>
+                <span className="text-copy-secondary">{roomId}</span>
               </>
             ) : (
-              <span className="text-copy-faint">ghost.ai/your-project-slug</span>
+              <span className="text-copy-faint">Room: your-project-name-abc123</span>
             )}
           </p>
         </div>

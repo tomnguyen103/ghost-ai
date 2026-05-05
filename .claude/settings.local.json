@@ -12,10 +12,10 @@
       "Bash(npx eslint *)",
       "Bash(git merge *)",
       "Bash(git fetch *)",
-      "Bash(Select-String \"prisma\")",
+      "PowerShell(Select-String \"prisma\")",
       "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\prisma\\\\models\" -Force)",
-      "Bash(Get-ChildItem \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\app\" -Recurse -Directory)",
-      "Bash(Select-Object FullName)",
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\app\" -Recurse -Directory)",
+      "PowerShell(Select-Object FullName)",
       "Bash(npm run *)"
     ]
   }

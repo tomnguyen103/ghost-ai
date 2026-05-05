@@ -1,11 +1,13 @@
 "use client"
 
+import Link from "next/link"
 import { Pencil, Plus, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { useProjectDialogsContext } from "./project-dialogs-context"
+import { useWorkspace } from "./workspace-context"
 import type { SidebarProject } from "@/lib/projects"
 
 interface ProjectSidebarProps {
@@ -23,10 +25,20 @@ function ProjectItem({
   showActions: boolean
 }) {
   const { openRename, openDelete } = useProjectDialogsContext()
+  const { workspaceProject } = useWorkspace()
+  const isActive = workspaceProject?.id === project.id
 
   return (
-    <div className="group flex items-center justify-between rounded-xl px-3 py-2 hover:bg-subtle cursor-pointer">
-      <span className="text-sm text-copy-secondary truncate flex-1">{project.name}</span>
+    <Link
+      href={`/editor/${project.id}`}
+      className={cn(
+        "group flex items-center justify-between rounded-xl px-3 py-2 transition-colors",
+        isActive
+          ? "bg-brand-dim text-copy-primary"
+          : "hover:bg-subtle text-copy-secondary cursor-pointer"
+      )}
+    >
+      <span className="text-sm truncate flex-1">{project.name}</span>
       {showActions && (
         <div className="flex items-center gap-0.5 shrink-0 ml-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
           <Button
@@ -34,6 +46,7 @@ function ProjectItem({
             size="icon"
             className="h-6 w-6 text-copy-muted hover:text-copy-primary"
             onClick={(e) => {
+              e.preventDefault()
               e.stopPropagation()
               openRename(project)
             }}
@@ -46,6 +59,7 @@ function ProjectItem({
             size="icon"
             className="h-6 w-6 text-copy-muted hover:text-error"
             onClick={(e) => {
+              e.preventDefault()
               e.stopPropagation()
               openDelete(project)
             }}
@@ -55,7 +69,7 @@ function ProjectItem({
           </Button>
         </div>
       )}
-    </div>
+    </Link>
   )
 }
 
@@ -66,7 +80,7 @@ export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects 
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/50 md:hidden"
+          className="fixed inset-0 z-20 bg-base/70 md:hidden"
           onClick={onClose}
           aria-hidden="true"
         />

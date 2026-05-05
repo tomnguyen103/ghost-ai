@@ -50,17 +50,20 @@ export function useProjectActions(): ProjectActionsHook {
 
   function openCreate() {
     setCreateName("")
+    setError(null)
     setDialog("create")
   }
 
   function openRename(project: SidebarProject) {
     setTargetProject(project)
     setRenameName(project.name)
+    setError(null)
     setDialog("rename")
   }
 
   function openDelete(project: SidebarProject) {
     setTargetProject(project)
+    setError(null)
     setDialog("delete")
   }
 
@@ -79,23 +82,21 @@ export function useProjectActions(): ProjectActionsHook {
     const roomId = toSlug(trimmed)
     if (!roomId) return
 
-     setLoading(true)
-     fetch("/api/projects", {
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-
+    setLoading(true)
+    fetch("/api/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: trimmed }),
-     })
-       .then((res) => {
-         if (!res.ok) throw new Error("Failed to create project")
-         return res.json()
-       })
-
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to create project")
+        return res.json()
+      })
       .then(({ project }) => {
-         close()
-
+        close()
         router.push(`/editor/${project.id}`)
-       })
+        router.refresh()
+      })
       .catch((err) => setError(err instanceof Error ? err.message : "An error occurred"))
       .finally(() => setLoading(false))
   }
@@ -132,6 +133,7 @@ export function useProjectActions(): ProjectActionsHook {
         close()
         if (isActive) {
           router.push("/editor")
+          router.refresh()
         } else {
           router.refresh()
         }

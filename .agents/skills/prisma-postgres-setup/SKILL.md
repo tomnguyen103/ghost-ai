@@ -137,9 +137,6 @@ All five packages are required:
 
 2. Write the direct connection string to `.env`. **Append** to the file if it already exists — do not overwrite existing entries:
 
-```
-DATABASE_URL="<direct-connection-string>"
-```
 
 3. Verify `.gitignore` includes `.env`. Create `.gitignore` if it does not exist. Warn the user if `.env` is not gitignored.
 

@@ -14,7 +14,7 @@ export async function getProjectsForSidebar(): Promise<{
   if (!userId) return { owned: [], shared: [] }
 
   const user = await currentUser()
-  const email = user?.emailAddresses[0]?.emailAddress
+  const email = user?.primaryEmailAddress?.emailAddress.toLowerCase()
 
   const owned = await prisma.project.findMany({
     where: { ownerId: userId },

@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { toSlug } from "@/hooks/use-project-actions"
+import { toSlug } from "@/lib/utils"
 
 interface CreateProjectDialogProps {
   open: boolean

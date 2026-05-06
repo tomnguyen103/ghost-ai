@@ -15,6 +15,7 @@ interface DeleteProjectDialogProps {
   open: boolean
   project: SidebarProject | null
   loading: boolean
+  error?: string | null
   onConfirm: () => void
   onClose: () => void
 }
@@ -23,6 +24,7 @@ export function DeleteProjectDialog({
   open,
   project,
   loading,
+  error,
   onConfirm,
   onClose,
 }: DeleteProjectDialogProps) {
@@ -37,6 +39,10 @@ export function DeleteProjectDialog({
             </DialogDescription>
           )}
         </DialogHeader>
+
+        {error && (
+          <p className="text-xs text-error">{error}</p>
+        )}
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={loading}>

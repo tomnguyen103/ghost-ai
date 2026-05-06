@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { toSlug } from "@/lib/utils";
 
 export async function GET() {
   const { userId } = await auth();
@@ -36,8 +37,12 @@ export async function POST(request: NextRequest) {
     // empty or non-JSON body — use defaults
   }
 
+  // When the client provides an id (the generated room ID), use it as both
+  // the project id and the slug so they stay aligned per spec.
+  const slug = id ?? `${toSlug(name) || "project"}-${Date.now().toString(36)}`;
+
   const project = await prisma.project.create({
-    data: { ...(id ? { id } : {}), ownerId: userId, name },
+    data: { ...(id ? { id } : {}), slug, ownerId: userId, name },
   });
 
   return NextResponse.json({ project }, { status: 201 });

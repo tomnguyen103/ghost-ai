@@ -19,19 +19,19 @@ interface EditorShellProps {
 }
 
 export function EditorShell({ children, ownedProjects, sharedProjects }: EditorShellProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [workspaceProject, setWorkspaceProject] = useState<{ id: string; name: string } | null>(null)
-  const [aiSidebarOpen, setAiSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [workspaceProject, setWorkspaceProject] = useState<{ id: string; name: string; slug: string } | null>(null)
+  const [aiSidebarOpen, setAiSidebarOpen] = useState(true)
   const pathname = usePathname()
   const actions = useProjectActions()
   const routeWorkspaceProject = useMemo(() => {
     const match = pathname.match(/^\/editor\/([^/]+)$/)
     if (!match) return null
 
-    const roomId = decodeURIComponent(match[1])
+    const slug = decodeURIComponent(match[1])
     return (
-      ownedProjects.find((project) => project.id === roomId) ??
-      sharedProjects.find((project) => project.id === roomId) ??
+      ownedProjects.find((project) => project.slug === slug) ??
+      sharedProjects.find((project) => project.slug === slug) ??
       null
     )
   }, [ownedProjects, pathname, sharedProjects])
@@ -52,15 +52,17 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
             isOpen={sidebarOpen}
             onToggle={() => setSidebarOpen((prev) => !prev)}
           />
-          <ProjectSidebar
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            ownedProjects={ownedProjects}
-            sharedProjects={sharedProjects}
-          />
-          <main className="flex flex-1 flex-col pt-12 overflow-hidden">
-            {children}
-          </main>
+          <div className="relative flex-1 min-h-0 overflow-hidden">
+            <main className="absolute inset-0 overflow-hidden">
+              {children}
+            </main>
+            <ProjectSidebar
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+              ownedProjects={ownedProjects}
+              sharedProjects={sharedProjects}
+            />
+          </div>
         </div>
 
         <CreateProjectDialog

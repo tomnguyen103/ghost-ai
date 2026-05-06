@@ -16,7 +16,16 @@
       "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\prisma\\\\models\" -Force)",
       "PowerShell(Get-ChildItem \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\app\" -Recurse -Directory)",
       "PowerShell(Select-Object FullName)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(rm -rf \"c:/Users/huuth/Desktop/ghost-ai/app/editor/[roomId]\")",
+      "Bash(npx prisma *)",
+      "Bash(node -e \"const pkg = require\\('./node_modules/lucide-react/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(node -e \"const lucide = require\\('./node_modules/lucide-react'\\); const icons = ['Square','Diamond','Circle','Pill','Database','Hexagon','Cylinder','RectangleHorizontal','RectangleEllipsis'].filter\\(n => n in lucide\\); console.log\\(icons.join\\(', '\\)\\)\")",
+      "Bash(node -e \"const rf = require\\('./node_modules/@xyflow/react'\\); const exports = Object.keys\\(rf\\).filter\\(k => k.includes\\('Change'\\) || k.includes\\('NodeAdd'\\)\\); console.log\\(exports.join\\(', '\\)\\)\")",
+      "Bash(node -e \"const t = require\\('./node_modules/@xyflow/react/dist/esm/index.js'\\); console.log\\(Object.keys\\(t\\).filter\\(k => k.includes\\('Node'\\)\\).join\\('\\\\n'\\)\\)\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\huuth\\Desktop\\ghost-ai\\app\\editor\\[roomId]"
     ]
   }
 }

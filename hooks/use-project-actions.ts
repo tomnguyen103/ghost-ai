@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
+import { toSlug } from "@/lib/utils"
 import type { SidebarProject } from "@/lib/projects"
 
 type DialogType = "create" | "rename" | "delete" | null
@@ -25,14 +26,8 @@ export interface ProjectActionsHook {
   handleDelete: () => void
 }
 
-export function toSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "")
+function generateSuffix(): string {
+  return Math.random().toString(36).slice(2, 8)
 }
 
 export function useProjectActions(): ProjectActionsHook {
@@ -42,14 +37,17 @@ export function useProjectActions(): ProjectActionsHook {
   const [dialog, setDialog] = useState<DialogType>(null)
   const [targetProject, setTargetProject] = useState<SidebarProject | null>(null)
   const [createName, setCreateName] = useState("")
+  const [createSuffix, setCreateSuffix] = useState("")
   const [renameName, setRenameName] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const createRoomId = toSlug(createName)
+  const nameSlug = toSlug(createName)
+  const createRoomId = nameSlug ? `${nameSlug}-${createSuffix}` : ""
 
   function openCreate() {
     setCreateName("")
+    setCreateSuffix(generateSuffix())
     setError(null)
     setDialog("create")
   }
@@ -77,16 +75,13 @@ export function useProjectActions(): ProjectActionsHook {
 
   function handleCreate() {
     const trimmed = createName.trim()
-    if (!trimmed) return
-
-    const roomId = toSlug(trimmed)
-    if (!roomId) return
+    if (!trimmed || !createRoomId) return
 
     setLoading(true)
     fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: trimmed }),
+      body: JSON.stringify({ name: trimmed, id: createRoomId }),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to create project")
@@ -123,7 +118,7 @@ export function useProjectActions(): ProjectActionsHook {
 
   function handleDelete() {
     if (!targetProject) return
-    const isActive = pathname === `/editor/${targetProject.id}`
+    const isActive = pathname === `/editor/${targetProject.slug}`
 
     setLoading(true)
     setError(null)

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 export interface SidebarProject {
   id: string
   name: string
+  slug: string
 }
 
 export async function getProjectsForSidebar(): Promise<{
@@ -19,14 +20,14 @@ export async function getProjectsForSidebar(): Promise<{
   const owned = await prisma.project.findMany({
     where: { ownerId: userId },
     orderBy: { createdAt: "desc" },
-    select: { id: true, name: true },
+    select: { id: true, name: true, slug: true },
   })
 
   const shared: SidebarProject[] = email
     ? (
         await prisma.projectCollaborator.findMany({
           where: { email },
-          include: { project: { select: { id: true, name: true } } },
+          include: { project: { select: { id: true, name: true, slug: true } } },
           orderBy: { createdAt: "desc" },
         })
       ).map((c) => c.project)

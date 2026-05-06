@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 interface ShareProject {
   id: string
   name: string
+  slug: string
 }
 
 interface Collaborator {
@@ -59,9 +60,9 @@ export function ShareDialog({ open, project, onOpenChange }: ShareDialogProps) {
   const [copied, setCopied] = useState(false)
 
   const projectLink = useMemo(() => {
-    if (typeof window === "undefined") return `/editor/${project.id}`
-    return `${window.location.origin}/editor/${project.id}`
-  }, [project.id])
+    if (typeof window === "undefined") return `/editor/${project.slug}`
+    return `${window.location.origin}/editor/${project.slug}`
+  }, [project.slug])
 
   useEffect(() => {
     if (!open) return

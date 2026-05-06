@@ -30,7 +30,7 @@ function ProjectItem({
 
   return (
     <Link
-      href={`/editor/${project.id}`}
+      href={`/editor/${project.slug}`}
       className={cn(
         "group flex items-center justify-between rounded-xl px-3 py-2 transition-colors",
         isActive
@@ -77,21 +77,13 @@ export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects 
   const { openCreate } = useProjectDialogsContext()
 
   return (
-    <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-base/70 md:hidden"
-          onClick={onClose}
-          aria-hidden="true"
-        />
+    <aside
+      className={cn(
+        "absolute left-0 top-0 bottom-0 z-30 flex w-72 flex-col border-r border-border-default bg-elevated shadow-xl overflow-hidden transition-transform duration-200",
+        isOpen ? "translate-x-0" : "-translate-x-full"
       )}
-
-      <aside
-        className={cn(
-          "fixed left-0 top-12 bottom-0 z-30 flex w-72 flex-col border-r border-border-default bg-elevated transition-transform duration-200",
-          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
-        )}
-      >
+    >
+      <div className="flex flex-col h-full">
         <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
           <span className="text-sm font-semibold text-copy-primary">Projects</span>
           <Button
@@ -156,7 +148,7 @@ export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects 
             New Project
           </Button>
         </div>
-      </aside>
-    </>
+      </div>
+    </aside>
   )
 }

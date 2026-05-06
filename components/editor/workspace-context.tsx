@@ -5,6 +5,7 @@ import { createContext, useContext } from "react"
 interface WorkspaceProject {
   id: string
   name: string
+  slug: string
 }
 
 interface WorkspaceContextValue {

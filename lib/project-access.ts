@@ -17,19 +17,19 @@ export async function getIdentity(): Promise<ClerkIdentity | null> {
 }
 
 export async function getProjectAccess(
-  projectId: string,
+  slug: string,
   userId: string,
   email: string | null
-): Promise<{ id: string; name: string; ownerId: string } | null> {
+): Promise<{ id: string; name: string; slug: string; ownerId: string } | null> {
   const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    select: { id: true, name: true, ownerId: true },
+    where: { slug },
+    select: { id: true, name: true, slug: true, ownerId: true },
   })
   if (!project) return null
   if (project.ownerId === userId) return project
   if (!email) return null
   const collab = await prisma.projectCollaborator.findFirst({
-    where: { projectId, email },
+    where: { projectId: project.id, email },
     select: { id: true },
   })
   return collab ? project : null

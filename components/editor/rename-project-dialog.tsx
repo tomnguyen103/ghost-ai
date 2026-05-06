@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { toSlug } from "@/hooks/use-project-actions"
+import { toSlug } from "@/lib/utils"
 import type { SidebarProject } from "@/lib/projects"
 
 interface RenameProjectDialogProps {

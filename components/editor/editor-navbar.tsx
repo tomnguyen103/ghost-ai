@@ -22,11 +22,11 @@ export function EditorNavbar({ isOpen, onToggle, className }: EditorNavbarProps)
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 flex h-12 items-center border-b border-border-default bg-surface px-3",
+          "flex h-12 shrink-0 items-center border-b border-border-default bg-surface px-3",
           className
         )}
       >
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
@@ -40,15 +40,17 @@ export function EditorNavbar({ isOpen, onToggle, className }: EditorNavbarProps)
               <PanelLeftOpen className="h-5 w-5" />
             )}
           </Button>
-        </div>
-
-        <div className="flex flex-1 items-center justify-center">
           {workspaceProject && (
-            <span className="text-sm font-medium text-copy-primary">
-              {workspaceProject.name}
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className="text-sm font-medium text-copy-primary">
+                {workspaceProject.name}
+              </span>
+              <span className="text-[10px] text-copy-faint">Workspace</span>
+            </div>
           )}
         </div>
+
+        <div className="flex flex-1" />
 
         <div className="flex items-center gap-1">
           {workspaceProject && (
@@ -64,17 +66,18 @@ export function EditorNavbar({ isOpen, onToggle, className }: EditorNavbarProps)
               </Button>
               <Button
                 variant="ghost"
-                size="icon"
+                size="sm"
                 onClick={() => setAiSidebarOpen(!aiSidebarOpen)}
                 className={cn(
-                  "h-8 w-8",
+                  "h-8 gap-1.5",
                   aiSidebarOpen
                     ? "text-ai bg-ai/10"
                     : "text-copy-muted hover:text-copy-primary"
                 )}
                 aria-label="Toggle AI sidebar"
               >
-                <Bot className="h-5 w-5" />
+                <Bot className="h-4 w-4" />
+                <span className="text-xs">AI</span>
               </Button>
             </>
           )}

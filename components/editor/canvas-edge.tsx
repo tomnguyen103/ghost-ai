@@ -146,11 +146,23 @@ export function CanvasEdgeRenderer({
               style={{ width: `${Math.max((editValue.length || 4) * 8 + 16, 64)}px` }}
             />
           ) : label ? (
-            <span className="rounded-full border border-[#2a2a30] bg-[#18181c] px-2 py-0.5 text-xs text-[#808090]">
+            <span
+              className="rounded-full border border-[#2a2a30] bg-[#18181c] px-2 py-0.5 text-xs text-[#808090]"
+              tabIndex={0}
+              role="button"
+              aria-label={`Edit label: ${label}`}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startEditing() } }}
+            >
               {label}
             </span>
           ) : isActive ? (
-            <span className="rounded-full border border-[#2a2a30] bg-[#18181c] px-2 py-0.5 text-xs text-[#505060] opacity-60">
+            <span
+              className="rounded-full border border-[#2a2a30] bg-[#18181c] px-2 py-0.5 text-xs text-[#505060] opacity-60"
+              tabIndex={0}
+              role="button"
+              aria-label="Add label"
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startEditing() } }}
+            >
               double-click to label
             </span>
           ) : null}

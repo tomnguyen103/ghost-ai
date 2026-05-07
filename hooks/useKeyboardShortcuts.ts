@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useEffectEvent } from "react"
 import type { ReactFlowInstance } from "@xyflow/react"
 
 function isEditableTarget(target: EventTarget | null): boolean {
@@ -18,39 +18,40 @@ export function useKeyboardShortcuts({
   undo: () => void
   redo: () => void
 }) {
-  const handlers = useRef({ flowInstance, undo, redo })
-  handlers.current = { flowInstance, undo, redo }
+  const onUndo = useEffectEvent(undo)
+  const onRedo = useEffectEvent(redo)
+  const onZoomIn = useEffectEvent(() => flowInstance.zoomIn({ duration: 200 }))
+  const onZoomOut = useEffectEvent(() => flowInstance.zoomOut({ duration: 200 }))
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (isEditableTarget(e.target)) return
 
       const ctrl = e.ctrlKey || e.metaKey
-      const { flowInstance: fi, undo: u, redo: r } = handlers.current
 
       if (ctrl && e.shiftKey && (e.key === "z" || e.key === "Z")) {
         e.preventDefault()
-        r()
+        onRedo()
         return
       }
       if (ctrl && (e.key === "y" || e.key === "Y")) {
         e.preventDefault()
-        r()
+        onRedo()
         return
       }
       if (ctrl && (e.key === "z" || e.key === "Z")) {
         e.preventDefault()
-        u()
+        onUndo()
         return
       }
       if (e.key === "+" || e.key === "=") {
         e.preventDefault()
-        fi.zoomIn({ duration: 200 })
+        onZoomIn()
         return
       }
       if (e.key === "-") {
         e.preventDefault()
-        fi.zoomOut({ duration: 200 })
+        onZoomOut()
         return
       }
     }

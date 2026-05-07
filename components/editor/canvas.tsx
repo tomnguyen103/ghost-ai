@@ -196,6 +196,7 @@ function CanvasInner() {
             onClick={() => zoomOut({ duration: 200 })}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary"
             title="Zoom out"
+            aria-label="Zoom out"
           >
             <Minus size={14} />
           </button>
@@ -203,6 +204,7 @@ function CanvasInner() {
             onClick={() => fitView({ duration: 300 })}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary"
             title="Fit view"
+            aria-label="Fit view"
           >
             <Maximize2 size={14} />
           </button>
@@ -210,6 +212,7 @@ function CanvasInner() {
             onClick={() => zoomIn({ duration: 200 })}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary"
             title="Zoom in"
+            aria-label="Zoom in"
           >
             <Plus size={14} />
           </button>
@@ -219,6 +222,7 @@ function CanvasInner() {
             disabled={!canUndo}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary disabled:opacity-40 disabled:cursor-not-allowed"
             title="Undo"
+            aria-label="Undo"
           >
             <Undo2 size={14} />
           </button>
@@ -227,6 +231,7 @@ function CanvasInner() {
             disabled={!canRedo}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary disabled:opacity-40 disabled:cursor-not-allowed"
             title="Redo"
+            aria-label="Redo"
           >
             <Redo2 size={14} />
           </button>

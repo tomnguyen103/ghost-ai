@@ -1,11 +1,10 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useCallback } from "react"
 import {
   ReactFlow,
   Background,
-  MiniMap,
-  type MiniMapNodeProps,
+  type Connection,
   BackgroundVariant,
   ConnectionMode,
   ReactFlowProvider,
@@ -13,71 +12,90 @@ import {
   useStore,
 } from "@xyflow/react"
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow"
+import { useUndo, useRedo, useCanUndo, useCanRedo } from "@liveblocks/react"
 import "@xyflow/react/dist/style.css"
 import "@liveblocks/react-ui/styles.css"
 import "@liveblocks/react-flow/styles.css"
-import { NODE_COLORS, type CanvasNode, type CanvasEdge, type CanvasNodeData, type ShapeDragPayload } from "@/types/canvas"
+import { Minus, Plus, Maximize2, Undo2, Redo2 } from "lucide-react"
+import { NODE_COLORS, type CanvasNode, type CanvasEdge, type ShapeDragPayload } from "@/types/canvas"
 import { CanvasNodeRenderer } from "./canvas-node"
+import { CanvasEdgeRenderer } from "./canvas-edge"
 import { ShapePanel } from "./shape-panel"
+import { StarterTemplatesModal } from "./starter-templates-modal"
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
+import { useWorkspace } from "./workspace-context"
+import type { CanvasTemplate } from "./starter-templates"
 
 const nodeTypes = {
   canvasNode: CanvasNodeRenderer,
 }
 
-const DEFAULT_COLOR = NODE_COLORS[0]
-
-function MiniMapShapeNode({ id, x, y, width, height, color, strokeColor, strokeWidth }: MiniMapNodeProps) {
-  const shape = useStore((s) => (s.nodeLookup.get(id)?.data as CanvasNodeData | undefined)?.shape ?? "rectangle")
-
-  const cx = x + width / 2
-  const cy = y + height / 2
-  const shared = { fill: color, stroke: strokeColor, strokeWidth }
-
-  switch (shape) {
-    case "diamond":
-      return <polygon points={`${cx},${y} ${x + width},${cy} ${cx},${y + height} ${x},${cy}`} {...shared} />
-    case "hexagon":
-      return (
-        <polygon
-          points={[
-            `${x + width * 0.25},${y}`,
-            `${x + width * 0.75},${y}`,
-            `${x + width},${cy}`,
-            `${x + width * 0.75},${y + height}`,
-            `${x + width * 0.25},${y + height}`,
-            `${x},${cy}`,
-          ].join(" ")}
-          {...shared}
-        />
-      )
-    case "circle":
-      return <ellipse cx={cx} cy={cy} rx={width / 2} ry={height / 2} {...shared} />
-    case "pill":
-      return <rect x={x} y={y} width={width} height={height} rx={Math.min(width, height) / 2} {...shared} />
-    case "cylinder":
-      return <rect x={x} y={y} width={width} height={height} rx={width * 0.15} {...shared} />
-    case "rectangle":
-    default:
-      return <rect x={x} y={y} width={width} height={height} rx={4} {...shared} />
-  }
+const edgeTypes = {
+  canvasEdge: CanvasEdgeRenderer,
 }
 
+const DEFAULT_COLOR = NODE_COLORS[0]
+
+
 let nodeIdCounter = 0
+let edgeIdCounter = 0
 
 function generateNodeId(shape: string): string {
   return `${shape}-${Date.now()}-${++nodeIdCounter}`
 }
 
 function CanvasInner() {
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
+  const { nodes, edges, onNodesChange, onEdgesChange, onDelete } =
     useLiveblocksFlow<CanvasNode, CanvasEdge>({
       suspense: true,
       nodes: { initial: [] },
       edges: { initial: [] },
     })
 
-  const { screenToFlowPosition } = useReactFlow()
+  const flowInstance = useReactFlow<CanvasNode, CanvasEdge>()
+  const { screenToFlowPosition, zoomIn, zoomOut, fitView } = flowInstance
   const domNode = useStore((s) => s.domNode)
+
+  const undo = useUndo()
+  const redo = useRedo()
+  const canUndo = useCanUndo()
+  const canRedo = useCanRedo()
+
+  useKeyboardShortcuts({ flowInstance, undo, redo })
+
+  const { templatesOpen, setTemplatesOpen } = useWorkspace()
+
+  const importTemplate = useCallback(
+    (template: CanvasTemplate) => {
+      onNodesChange([
+        ...nodes.map((nd) => ({ type: "remove" as const, id: nd.id })),
+        ...template.nodes.map((nd) => ({ type: "add" as const, item: nd })),
+      ])
+      onEdgesChange([
+        ...edges.map((ed) => ({ type: "remove" as const, id: ed.id })),
+        ...template.edges.map((ed) => ({ type: "add" as const, item: ed })),
+      ])
+      setTimeout(() => fitView({ duration: 400, padding: 0.12 }), 150)
+    },
+    [nodes, edges, onNodesChange, onEdgesChange, fitView],
+  )
+
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      if (!connection.source || !connection.target) return
+      const newEdge: CanvasEdge = {
+        id: `edge-${Date.now()}-${++edgeIdCounter}`,
+        type: "canvasEdge",
+        source: connection.source,
+        target: connection.target,
+        sourceHandle: connection.sourceHandle ?? null,
+        targetHandle: connection.targetHandle ?? null,
+        data: {},
+      }
+      onEdgesChange([{ type: "add", item: newEdge }])
+    },
+    [onEdgesChange],
+  )
 
   // Stable refs so the native event listeners always call the latest values
   // without needing to be re-attached on every render.
@@ -150,6 +168,7 @@ function CanvasInner() {
         onConnect={onConnect}
         onDelete={onDelete}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         connectionMode={ConnectionMode.Loose}
         fitView
       >
@@ -159,22 +178,63 @@ function CanvasInner() {
           gap={20}
           size={1.5}
         />
-        <MiniMap
-          style={{
-            backgroundColor: "#18181c",
-            border: "1px solid #2a2a30",
-            borderRadius: "8px",
-          }}
-          nodeColor={(node: CanvasNode) => node.data.color ?? "#505060"}
-          nodeStrokeColor="#2a2a30"
-          maskColor="rgba(8, 8, 9, 0.65)"
-          nodeComponent={MiniMapShapeNode}
-        />
         <Cursors />
       </ReactFlow>
       <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
         <div className="pointer-events-auto">
           <ShapePanel />
+        </div>
+      </div>
+      <StarterTemplatesModal
+        open={templatesOpen}
+        onOpenChange={setTemplatesOpen}
+        onImport={importTemplate}
+      />
+      <div className="pointer-events-none absolute bottom-4 left-4">
+        <div className="pointer-events-auto flex items-center rounded-xl border border-[#2a2a30] bg-[#18181c] px-1 py-1">
+          <button
+            onClick={() => zoomOut({ duration: 200 })}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary"
+            title="Zoom out"
+            aria-label="Zoom out"
+          >
+            <Minus size={14} />
+          </button>
+          <button
+            onClick={() => fitView({ duration: 300 })}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary"
+            title="Fit view"
+            aria-label="Fit view"
+          >
+            <Maximize2 size={14} />
+          </button>
+          <button
+            onClick={() => zoomIn({ duration: 200 })}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary"
+            title="Zoom in"
+            aria-label="Zoom in"
+          >
+            <Plus size={14} />
+          </button>
+          <div className="mx-1 h-4 w-px bg-[#2a2a30]" />
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Undo"
+            aria-label="Undo"
+          >
+            <Undo2 size={14} />
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-copy-secondary transition-colors hover:bg-[#2a2a30] hover:text-copy-primary disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Redo"
+            aria-label="Redo"
+          >
+            <Redo2 size={14} />
+          </button>
         </div>
       </div>
     </div>

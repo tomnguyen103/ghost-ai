@@ -22,6 +22,7 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [workspaceProject, setWorkspaceProject] = useState<{ id: string; name: string; slug: string } | null>(null)
   const [aiSidebarOpen, setAiSidebarOpen] = useState(true)
+  const [templatesOpen, setTemplatesOpen] = useState(false)
   const pathname = usePathname()
   const actions = useProjectActions()
   const routeWorkspaceProject = useMemo(() => {
@@ -44,6 +45,8 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
         setWorkspaceProject,
         aiSidebarOpen,
         setAiSidebarOpen,
+        templatesOpen,
+        setTemplatesOpen,
       }}
     >
       <ProjectDialogsContext.Provider value={actions}>

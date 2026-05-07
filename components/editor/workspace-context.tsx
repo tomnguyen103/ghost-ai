@@ -13,6 +13,8 @@ interface WorkspaceContextValue {
   setWorkspaceProject: (project: WorkspaceProject | null) => void
   aiSidebarOpen: boolean
   setAiSidebarOpen: (open: boolean) => void
+  templatesOpen: boolean
+  setTemplatesOpen: (open: boolean) => void
 }
 
 export const WorkspaceContext = createContext<WorkspaceContextValue>({
@@ -20,6 +22,8 @@ export const WorkspaceContext = createContext<WorkspaceContextValue>({
   setWorkspaceProject: () => {},
   aiSidebarOpen: false,
   setAiSidebarOpen: () => {},
+  templatesOpen: false,
+  setTemplatesOpen: () => {},
 })
 
 export const useWorkspace = () => useContext(WorkspaceContext)

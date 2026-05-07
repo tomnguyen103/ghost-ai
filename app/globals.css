@@ -101,7 +101,7 @@ body {
   background-color: var(--bg-base) !important;
 }
 
-/* ReactFlow: hide connection handles by default, reveal on node hover/select */
+/* ReactFlow: hide handles by default, fade in on node hover/select */
 .react-flow__handle {
   opacity: 0;
   transition: opacity 0.15s ease;

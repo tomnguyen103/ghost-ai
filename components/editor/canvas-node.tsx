@@ -317,10 +317,10 @@ export function CanvasNodeRenderer({ id, data, selected }: NodeProps<CanvasNode>
         handleStyle={RESIZER_HANDLE_STYLE}
         lineStyle={RESIZER_LINE_STYLE}
       />
-      <Handle id="top" type="source" position={Position.Top} style={CONNECTION_HANDLE_STYLE} />
-      <Handle id="right" type="source" position={Position.Right} style={CONNECTION_HANDLE_STYLE} />
-      <Handle id="bottom" type="source" position={Position.Bottom} style={CONNECTION_HANDLE_STYLE} />
-      <Handle id="left" type="source" position={Position.Left} style={CONNECTION_HANDLE_STYLE} />
+      <Handle id="top" type="source" position={Position.Top} style={CONNECTION_HANDLE_STYLE} isConnectableEnd />
+      <Handle id="right" type="source" position={Position.Right} style={CONNECTION_HANDLE_STYLE} isConnectableEnd />
+      <Handle id="bottom" type="source" position={Position.Bottom} style={CONNECTION_HANDLE_STYLE} isConnectableEnd />
+      <Handle id="left" type="source" position={Position.Left} style={CONNECTION_HANDLE_STYLE} isConnectableEnd />
       <div className="relative h-full w-full" onDoubleClick={startEditing}>
         {shape === "rectangle" && <RectShape {...shapeProps} />}
         {shape === "pill" && <PillShape {...shapeProps} />}

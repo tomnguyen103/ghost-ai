@@ -1,19 +1,14 @@
-enum Status {
-  DRAFT
-  ARCHIVED
-}
-
 model Project {
-  id             String                @id @default(cuid())
-  ownerId        String
-  name           String
-  slug           String                @unique
-  description    String?
-  status         Status                @default(DRAFT)
-  canvasJsonPath String?
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  collaborators  ProjectCollaborator[]
+  id            String                @id @default(cuid())
+  ownerId       String
+  name          String
+  status        Status                @default(DRAFT)
+  canvasBlobUrl String?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  description   String?
+  slug          String                @unique
+  collaborators ProjectCollaborator[]
 
   @@index([ownerId])
   @@index([createdAt])
@@ -29,4 +24,9 @@ model ProjectCollaborator {
   @@unique([projectId, email])
   @@index([email])
   @@index([projectId, createdAt])
+}
+
+enum Status {
+  DRAFT
+  ARCHIVED
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { PanelLeftClose, PanelLeftOpen, Share2, Bot, LayoutTemplate } from "lucide-react"
+import { PanelLeftClose, PanelLeftOpen, Share2, Bot, LayoutTemplate, Save, Loader2, CheckCheck } from "lucide-react"
 import { UserButton } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -14,8 +14,21 @@ interface EditorNavbarProps {
   className?: string
 }
 
+function SaveIcon({ saveStatus }: { saveStatus: import("@/hooks/use-autosave").SaveStatus }) {
+  if (saveStatus === "saving") return <Loader2 className="h-3.5 w-3.5 animate-spin" />
+  if (saveStatus === "saved") return <CheckCheck className="h-3.5 w-3.5" />
+  return <Save className="h-3.5 w-3.5" />
+}
+
+function saveLabel(saveStatus: import("@/hooks/use-autosave").SaveStatus) {
+  if (saveStatus === "saving") return "Saving..."
+  if (saveStatus === "saved") return "Saved"
+  if (saveStatus === "error") return "Error"
+  return "Save"
+}
+
 export function EditorNavbar({ isOpen, onToggle, className }: EditorNavbarProps) {
-  const { workspaceProject, aiSidebarOpen, setAiSidebarOpen, setTemplatesOpen } = useWorkspace()
+  const { workspaceProject, aiSidebarOpen, setAiSidebarOpen, setTemplatesOpen, saveStatus, manualSaveRef } = useWorkspace()
   const [shareOpen, setShareOpen] = useState(false)
 
   return (
@@ -52,42 +65,62 @@ export function EditorNavbar({ isOpen, onToggle, className }: EditorNavbarProps)
 
         <div className="flex flex-1" />
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {workspaceProject && (
             <>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setTemplatesOpen(true)}
-                className="h-8 gap-1.5 text-copy-muted hover:text-copy-primary"
-              >
-                <LayoutTemplate className="h-4 w-4" />
-                <span className="text-xs">Templates</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShareOpen(true)}
-                className="h-8 gap-1.5 text-copy-muted hover:text-copy-primary"
-              >
-                <Share2 className="h-4 w-4" />
-                <span className="text-xs">Share</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setAiSidebarOpen(!aiSidebarOpen)}
+              {/* Save button — pill with icon + label */}
+              <button
+                onClick={() => manualSaveRef.current?.()}
+                disabled={saveStatus === "saving"}
+                title={saveLabel(saveStatus)}
                 className={cn(
-                  "h-8 gap-1.5",
-                  aiSidebarOpen
-                    ? "text-ai bg-ai/10"
-                    : "text-copy-muted hover:text-copy-primary"
+                  "flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-all disabled:opacity-60",
+                  saveStatus === "saved"
+                    ? "border-success/40 bg-success/10 text-success"
+                    : saveStatus === "error"
+                    ? "border-error/40 bg-error/10 text-error"
+                    : "border-border-default bg-elevated text-copy-secondary hover:border-brand/40 hover:bg-brand-dim hover:text-brand"
                 )}
-                aria-label="Toggle AI sidebar"
               >
-                <Bot className="h-4 w-4" />
-                <span className="text-xs">AI</span>
-              </Button>
+                <SaveIcon saveStatus={saveStatus} />
+                {saveLabel(saveStatus)}
+              </button>
+
+              {/* Templates */}
+              <button
+                onClick={() => setTemplatesOpen(true)}
+                title="Templates"
+                className="flex h-8 items-center gap-1.5 rounded-full border border-border-default bg-elevated px-3 text-xs font-medium text-copy-muted transition-all hover:border-brand/40 hover:bg-brand-dim hover:text-brand"
+              >
+                <LayoutTemplate className="h-3.5 w-3.5" />
+                Templates
+              </button>
+
+              {/* Share */}
+              <button
+                onClick={() => setShareOpen(true)}
+                title="Share"
+                className="flex h-8 items-center gap-1.5 rounded-full border border-border-default bg-elevated px-3 text-xs font-medium text-copy-muted transition-all hover:border-brand/40 hover:bg-brand-dim hover:text-brand"
+              >
+                <Share2 className="h-3.5 w-3.5" />
+                Share
+              </button>
+
+              {/* AI sidebar toggle */}
+              <button
+                onClick={() => setAiSidebarOpen(!aiSidebarOpen)}
+                title="Toggle AI"
+                aria-label="Toggle AI sidebar"
+                className={cn(
+                  "flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-all",
+                  aiSidebarOpen
+                    ? "border-ai/40 bg-ai/10 text-ai"
+                    : "border-border-default bg-elevated text-copy-muted hover:border-ai/40 hover:bg-ai/10 hover:text-ai"
+                )}
+              >
+                <Bot className="h-3.5 w-3.5" />
+                AI
+              </button>
             </>
           )}
           <UserButton />

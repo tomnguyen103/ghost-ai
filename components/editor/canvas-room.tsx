@@ -10,14 +10,15 @@ import { Canvas } from "./canvas"
 
 interface CanvasRoomProps {
   roomId: string
+  projectId: string
 }
 
-export function CanvasRoom({ roomId }: CanvasRoomProps) {
+export function CanvasRoom({ roomId, projectId }: CanvasRoomProps) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
       <RoomProvider
         id={roomId}
-        initialPresence={{ cursor: null, isThinking: false }}
+        initialPresence={{ cursor: null, thinking: false }}
       >
         <ErrorBoundary
           fallback={
@@ -33,7 +34,7 @@ export function CanvasRoom({ roomId }: CanvasRoomProps) {
               </div>
             }
           >
-            <Canvas />
+            <Canvas projectId={projectId} />
           </ClientSideSuspense>
         </ErrorBoundary>
       </RoomProvider>

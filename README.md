@@ -19,7 +19,7 @@ The implementation is functionally complete through the current feature spec set
 | Realtime canvas | Liveblocks, React Flow |
 | Background tasks | Trigger.dev |
 | AI | AI SDK with Google Gemini |
-| Artifacts | Vercel Blob |
+| Vercel Blob |
 
 ## Setup
 

@@ -1,62 +1,111 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState, useRef } from "react"
+import { usePathname } from "next/navigation"
 import { EditorNavbar } from "./editor-navbar"
 import { ProjectSidebar } from "./project-sidebar"
 import { ProjectDialogsContext } from "./project-dialogs-context"
+import { WorkspaceContext } from "./workspace-context"
 import { CreateProjectDialog } from "./create-project-dialog"
 import { RenameProjectDialog } from "./rename-project-dialog"
 import { DeleteProjectDialog } from "./delete-project-dialog"
-import { useProjectDialogs } from "@/hooks/use-project-dialogs"
+import { useProjectActions } from "@/hooks/use-project-actions"
+import type { SidebarProject } from "@/lib/projects"
 
 interface EditorShellProps {
   children: React.ReactNode
+  ownedProjects: SidebarProject[]
+  sharedProjects: SidebarProject[]
 }
 
-export function EditorShell({ children }: EditorShellProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const dialogs = useProjectDialogs()
+export function EditorShell({ children, ownedProjects, sharedProjects }: EditorShellProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [workspaceProject, setWorkspaceProject] = useState<{ id: string; name: string; slug: string } | null>(null)
+  const [aiSidebarOpen, setAiSidebarOpen] = useState(true)
+  const [templatesOpen, setTemplatesOpen] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<import("@/hooks/use-autosave").SaveStatus>("idle")
+  const manualSaveRef = useRef<(() => void) | null>(null)
+  const canvasSnapshotRef = useRef<{ nodes: import("@/types/canvas").CanvasNode[]; edges: import("@/types/canvas").CanvasEdge[] }>({ nodes: [], edges: [] })
+  const [aiStatusMessage, setAiStatusMessage] = useState<import("./workspace-context").AiStatusMessage | null>(null)
+  const pathname = usePathname()
+  const actions = useProjectActions()
+  const routeWorkspaceProject = useMemo(() => {
+    const match = pathname.match(/^\/editor\/([^/]+)$/)
+    if (!match) return null
+
+    const slug = decodeURIComponent(match[1])
+    return (
+      ownedProjects.find((project) => project.slug === slug) ??
+      sharedProjects.find((project) => project.slug === slug) ??
+      null
+    )
+  }, [ownedProjects, pathname, sharedProjects])
+  const activeWorkspaceProject = workspaceProject ?? routeWorkspaceProject
 
   return (
-    <ProjectDialogsContext.Provider value={dialogs}>
-      <div className="flex h-screen flex-col bg-base">
-        <EditorNavbar
-          isOpen={sidebarOpen}
-          onToggle={() => setSidebarOpen((prev) => !prev)}
-        />
-        <ProjectSidebar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-        <main className="flex flex-1 flex-col pt-12 overflow-hidden">
-          {children}
-        </main>
-      </div>
+    <WorkspaceContext.Provider
+      value={{
+        workspaceProject: activeWorkspaceProject,
+        setWorkspaceProject,
+        aiSidebarOpen,
+        setAiSidebarOpen,
+        templatesOpen,
+        setTemplatesOpen,
+        saveStatus,
+        setSaveStatus,
+        manualSaveRef,
+        canvasSnapshotRef,
+        aiStatusMessage,
+        setAiStatusMessage,
+      }}
+    >
+      <ProjectDialogsContext.Provider value={actions}>
+        <div className="flex h-screen flex-col bg-base">
+          <EditorNavbar
+            isOpen={sidebarOpen}
+            onToggle={() => setSidebarOpen((prev) => !prev)}
+          />
+          <div className="relative flex-1 min-h-0 overflow-hidden">
+            <main className="absolute inset-0 overflow-hidden">
+              {children}
+            </main>
+            <ProjectSidebar
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+              ownedProjects={ownedProjects}
+              sharedProjects={sharedProjects}
+            />
+          </div>
+        </div>
 
-      <CreateProjectDialog
-        open={dialogs.dialog === "create"}
-        name={dialogs.createName}
-        loading={dialogs.loading}
-        onNameChange={dialogs.setCreateName}
-        onConfirm={dialogs.handleCreate}
-        onClose={dialogs.close}
-      />
-      <RenameProjectDialog
-        open={dialogs.dialog === "rename"}
-        project={dialogs.targetProject}
-        name={dialogs.renameName}
-        loading={dialogs.loading}
-        onNameChange={dialogs.setRenameName}
-        onConfirm={dialogs.handleRename}
-        onClose={dialogs.close}
-      />
-      <DeleteProjectDialog
-        open={dialogs.dialog === "delete"}
-        project={dialogs.targetProject}
-        loading={dialogs.loading}
-        onConfirm={dialogs.handleDelete}
-        onClose={dialogs.close}
-      />
-    </ProjectDialogsContext.Provider>
+        <CreateProjectDialog
+          open={actions.dialog === "create"}
+          name={actions.createName}
+          roomId={actions.createRoomId}
+          loading={actions.loading}
+          onNameChange={actions.setCreateName}
+          onConfirm={actions.handleCreate}
+          onClose={actions.close}
+        />
+        <RenameProjectDialog
+          open={actions.dialog === "rename"}
+          project={actions.targetProject}
+          name={actions.renameName}
+          loading={actions.loading}
+          error={actions.error}
+          onNameChange={actions.setRenameName}
+          onConfirm={actions.handleRename}
+          onClose={actions.close}
+        />
+        <DeleteProjectDialog
+          open={actions.dialog === "delete"}
+          project={actions.targetProject}
+          loading={actions.loading}
+          error={actions.error}
+          onConfirm={actions.handleDelete}
+          onClose={actions.close}
+        />
+      </ProjectDialogsContext.Provider>
+    </WorkspaceContext.Provider>
   )
 }

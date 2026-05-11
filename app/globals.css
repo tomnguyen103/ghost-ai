@@ -95,3 +95,18 @@ body {
   background-color: var(--bg-base);
   color: var(--text-primary);
 }
+
+/* ReactFlow: match dark theme background */
+.react-flow {
+  background-color: var(--bg-base) !important;
+}
+
+/* ReactFlow: hide handles by default, fade in on node hover/select */
+.react-flow__handle {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.react-flow__node:hover .react-flow__handle,
+.react-flow__node.selected .react-flow__handle {
+  opacity: 1;
+}

@@ -11,7 +11,29 @@
       "Bash(npx next *)",
       "Bash(npx eslint *)",
       "Bash(git merge *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "PowerShell(Select-String \"prisma\")",
+      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\prisma\\\\models\" -Force)",
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\huuth\\\\Desktop\\\\ghost-ai\\\\app\" -Recurse -Directory)",
+      "PowerShell(Select-Object FullName)",
+      "Bash(npm run *)",
+      "Bash(rm -rf \"c:/Users/huuth/Desktop/ghost-ai/app/editor/[roomId]\")",
+      "Bash(npx prisma *)",
+      "Bash(node -e \"const pkg = require\\('./node_modules/lucide-react/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(node -e \"const lucide = require\\('./node_modules/lucide-react'\\); const icons = ['Square','Diamond','Circle','Pill','Database','Hexagon','Cylinder','RectangleHorizontal','RectangleEllipsis'].filter\\(n => n in lucide\\); console.log\\(icons.join\\(', '\\)\\)\")",
+      "Bash(node -e \"const rf = require\\('./node_modules/@xyflow/react'\\); const exports = Object.keys\\(rf\\).filter\\(k => k.includes\\('Change'\\) || k.includes\\('NodeAdd'\\)\\); console.log\\(exports.join\\(', '\\)\\)\")",
+      "Bash(node -e \"const t = require\\('./node_modules/@xyflow/react/dist/esm/index.js'\\); console.log\\(Object.keys\\(t\\).filter\\(k => k.includes\\('Node'\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const pkg = require\\('./package.json'\\); console.log\\(JSON.stringify\\({react: pkg.dependencies?.react, '@types/react': pkg.devDependencies?.['@types/react'], typescript: pkg.devDependencies?.typescript}, null, 2\\)\\)\")",
+      "Bash(node -e \"const f = require\\('fs'\\); const t = f.readFileSync\\('./node_modules/@types/react/index.d.ts', 'utf-8'\\); const i = t.indexOf\\('vectorEffect'\\); console.log\\(i !== -1 ? t.slice\\(i-50, i+100\\) : 'NOT FOUND'\\)\")",
+      "Bash(node -e \"const pkg = require\\('./node_modules/@xyflow/react/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(node -e \"const f = require\\('fs'\\); const t = f.readFileSync\\('./node_modules/@xyflow/react/dist/esm/index.js', 'utf-8'\\); const matches = [...t.matchAll\\(/export\\\\s*\\\\{\\\\s*\\([^}]+\\)\\\\}/g\\)].flatMap\\(m => m[1].split\\(','\\).map\\(s => s.trim\\(\\).split\\(' '\\).pop\\(\\)\\)\\); const resize = matches.filter\\(n => n && n.toLowerCase\\(\\).includes\\('resize'\\)\\); console.log\\(resize\\)\")",
+      "Bash(node -e \"const f = require\\('fs'\\); const t = f.readFileSync\\('./node_modules/@xyflow/react/dist/esm/index.js', 'utf-8'\\); const i = t.indexOf\\('NodeResizer'\\); const chunk = t.slice\\(i, i+600\\); console.log\\(chunk\\)\")",
+      "Bash(node -e \"const f = require\\('fs'\\); const t = f.readFileSync\\('./node_modules/@xyflow/react/dist/esm/index.js', 'utf-8'\\); const i = t.indexOf\\('NodeResizer ='\\); const chunk = t.slice\\(i, i+800\\); console.log\\(chunk\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const f = require\\('fs'\\); const files = f.readdirSync\\('./node_modules/@xyflow/react/dist/esm/'\\); console.log\\(files.filter\\(x => x.endsWith\\('.d.ts'\\)\\)\\)\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\huuth\\Desktop\\ghost-ai\\app\\editor\\[roomId]"
     ]
   }
 }

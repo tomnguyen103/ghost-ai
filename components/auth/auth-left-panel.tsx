@@ -33,7 +33,7 @@ export function AuthLeftPanel() {
         >
           D
         </div>
-        <span className="text-sm font-medium text-copy-primary">Development Plan tools</span>
+        <span className="text-sm font-medium text-copy-primary">Development Plan Tools</span>
       </div>
 
       {/* Main content — vertically centered in remaining space */}
@@ -43,7 +43,7 @@ export function AuthLeftPanel() {
             Design systems at the speed of thought.
           </h1>
           <p className="text-sm text-copy-muted leading-relaxed">
-            Describe your architecture in plain English. Development Plan tools maps it to a
+            Describe your architecture in plain English. Development Plan Tools maps it to a
             shared canvas your whole team can refine in real time.
           </p>
         </div>
@@ -68,7 +68,7 @@ export function AuthLeftPanel() {
       </div>
 
       {/* Footer */}
-      <p className="text-xs text-copy-faint">© 2026 Development Plan tools. All rights reserved.</p>
+      <p className="text-xs text-copy-faint">© 2026 Development Plan Tools. All rights reserved.</p>
     </div>
   )
 }

@@ -1,6 +1,8 @@
-# Development Plan tools
+# Development Plan Tools
 
-Development Plan tools is a dark, real-time collaborative system design workspace. Users create architecture projects, collaborate on a Liveblocks + React Flow canvas, ask an AI agent to generate or refine system diagrams, and generate persistent Markdown technical specifications from the final graph.
+Development Plan Tools is a dark, real-time collaborative system design workspace. Users create architecture projects, collaborate on a Liveblocks + React Flow canvas, ask an AI agent to generate or refine system diagrams, and generate persistent Markdown technical specifications from the final graph.
+
+Demo: [https://development-tool.tomnguyen.me/](https://development-tool.tomnguyen.me/)
 
 ## Current Status
 

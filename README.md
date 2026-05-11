@@ -10,16 +10,21 @@ The implementation is functionally complete through the current feature spec set
 
 ## Tech Stack
 
+This stack reflects the current `package.json` dependencies and the app integrations in `app/`, `components/`, `lib/`, and `trigger/`.
+
 | Area | Technology |
 | --- | --- |
-| App framework | Next.js 16, React 19, TypeScript |
-| UI | Tailwind CSS v4, shadcn/ui, Lucide React |
-| Auth | Clerk |
-| Data | Prisma 7, PostgreSQL |
-| Realtime canvas | Liveblocks, React Flow |
-| Background tasks | Trigger.dev |
-| AI | AI SDK with Google Gemini |
-| Vercel Blob |
+| App framework | Next.js 16.2, React 19.2, TypeScript 5 |
+| Routing/runtime | Next.js App Router, React Server Components, `proxy.ts` route protection |
+| Styling and UI | Tailwind CSS v4, shadcn/ui primitives, Radix UI, Lucide React, Geist fonts via `next/font` |
+| Authentication | Clerk Next.js SDK and Clerk UI dark theme |
+| Database | PostgreSQL with Prisma ORM 7.8 |
+| Database drivers | `pg`, `@prisma/adapter-pg`, and Prisma Accelerate support |
+| Realtime collaboration | Liveblocks 3.18 presence, room events, auth, undo/redo, and cursors |
+| Canvas editor | React Flow via `@xyflow/react` 12.10 and `@liveblocks/react-flow` |
+| Background tasks | Trigger.dev SDK 4.4 and Trigger.dev React realtime hooks |
+| AI generation | Vercel AI SDK 6 with Google Gemini via `@ai-sdk/google` |
+| Artifact storage | Vercel Blob for canvas snapshots and generated Markdown specs |
 
 ## Setup
 

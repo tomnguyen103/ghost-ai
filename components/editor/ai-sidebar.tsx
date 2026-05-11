@@ -30,7 +30,7 @@ const STARTER_CHIPS = [
   "Build a CI/CD pipeline",
 ]
 
-const AI_SENDER = "Ghost AI"
+const AI_SENDER = "Development Plan tools"
 
 // Mounts useRealtimeRun and fires onStatusChange; renders nothing
 function RunWatcher({
@@ -350,7 +350,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
         </div>
         <div className="flex min-w-0 flex-1 flex-col leading-none">
           <span className="text-sm font-semibold text-copy-primary">AI Workspace</span>
-          <span className="text-[10px] text-copy-muted">Collaborate with Ghost AI</span>
+          <span className="text-[10px] text-copy-muted">Collaborate with Development Plan tools</span>
         </div>
         <Button
           variant="ghost"
@@ -396,7 +396,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                     <Bot className="h-6 w-6 text-ai" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-copy-primary">Ghost AI Architect</p>
+                    <p className="text-sm font-medium text-copy-primary">Development Plan tools Architect</p>
                     <p className="mt-1 text-xs leading-relaxed text-copy-muted">
                       Describe your system and I&apos;ll help you design the architecture.
                     </p>
@@ -464,7 +464,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
             <div className="shrink-0 flex items-center gap-2 border-t border-border-default bg-[#62C073]/10 px-4 py-2">
               <Loader2 className="h-3 w-3 animate-spin shrink-0" style={{ color: "#62C073" }} />
               <span className="text-[10px] truncate" style={{ color: "#62C073" }}>
-                {aiStatusMessage?.status ?? "Ghost AI is working on your canvas…"}
+                {aiStatusMessage?.status ?? "Development Plan tools is working on your canvas…"}
               </span>
             </div>
           )}
@@ -477,7 +477,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                 value={architectInput}
                 onChange={handleArchitectInputChange}
                 onKeyDown={handleArchitectKeyDown}
-                placeholder="Ask Ghost AI…"
+                placeholder="Ask Development Plan tools…"
                 disabled={isGenerating}
                 className="min-h-[72px] flex-1 resize-none border-border-default bg-elevated text-xs text-copy-primary placeholder:text-copy-muted disabled:opacity-50"
                 style={{ height: "72px", maxHeight: "160px", overflowY: "auto" }}

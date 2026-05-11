@@ -115,10 +115,10 @@ function buildSystemPrompt(
   );
 
   const historyText = chatHistory
-    .map((m) => `${m.role === "user" ? "User" : "Ghost AI"}: ${m.content}`)
+    .map((m) => `${m.role === "user" ? "User" : "Development Plan tools"}: ${m.content}`)
     .join("\n");
 
-  return `You are Ghost AI, an expert software architect. Your task is to generate a detailed Markdown technical specification document based on the system architecture diagram and conversation history provided below.
+  return `You are Development Plan tools, an expert software architect. Your task is to generate a detailed Markdown technical specification document based on the system architecture diagram and conversation history provided below.
 
 ## Canvas Architecture
 

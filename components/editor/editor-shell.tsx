@@ -25,6 +25,8 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
   const [templatesOpen, setTemplatesOpen] = useState(false)
   const [saveStatus, setSaveStatus] = useState<import("@/hooks/use-autosave").SaveStatus>("idle")
   const manualSaveRef = useRef<(() => void) | null>(null)
+  const canvasSnapshotRef = useRef<{ nodes: import("@/types/canvas").CanvasNode[]; edges: import("@/types/canvas").CanvasEdge[] }>({ nodes: [], edges: [] })
+  const [aiStatusMessage, setAiStatusMessage] = useState<import("./workspace-context").AiStatusMessage | null>(null)
   const pathname = usePathname()
   const actions = useProjectActions()
   const routeWorkspaceProject = useMemo(() => {
@@ -52,6 +54,9 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
         saveStatus,
         setSaveStatus,
         manualSaveRef,
+        canvasSnapshotRef,
+        aiStatusMessage,
+        setAiStatusMessage,
       }}
     >
       <ProjectDialogsContext.Provider value={actions}>

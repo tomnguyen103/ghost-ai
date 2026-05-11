@@ -2,11 +2,18 @@
 
 import { createContext, useContext, useRef, type MutableRefObject } from "react"
 import type { SaveStatus } from "@/hooks/use-autosave"
+import type { CanvasNode, CanvasEdge } from "@/types/canvas"
 
 interface WorkspaceProject {
   id: string
   name: string
   slug: string
+}
+
+export interface AiStatusMessage {
+  status: string
+  step: "start" | "processing" | "complete" | "error"
+  text?: string
 }
 
 interface WorkspaceContextValue {
@@ -20,6 +27,11 @@ interface WorkspaceContextValue {
   setSaveStatus: (status: SaveStatus) => void
   // Ref to the latest manualSave function — always current, no stale closure
   manualSaveRef: MutableRefObject<(() => void) | null>
+  // Ref to latest canvas snapshot for spec generation — set by CanvasInner
+  canvasSnapshotRef: MutableRefObject<{ nodes: CanvasNode[]; edges: CanvasEdge[] }>
+  // Latest broadcast from the ai-status-feed
+  aiStatusMessage: AiStatusMessage | null
+  setAiStatusMessage: (msg: AiStatusMessage | null) => void
 }
 
 export const WorkspaceContext = createContext<WorkspaceContextValue>({
@@ -33,6 +45,10 @@ export const WorkspaceContext = createContext<WorkspaceContextValue>({
   setSaveStatus: () => {},
   // eslint-disable-next-line react-hooks/rules-of-hooks
   manualSaveRef: { current: null },
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  canvasSnapshotRef: { current: { nodes: [], edges: [] } },
+  aiStatusMessage: null,
+  setAiStatusMessage: () => {},
 })
 
 export const useWorkspace = () => useContext(WorkspaceContext)

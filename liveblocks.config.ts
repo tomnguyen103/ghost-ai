@@ -16,7 +16,12 @@ declare global {
       };
     };
 
-    RoomEvent: {};
+    RoomEvent:
+      | { type: "ai-status"; status: string; step: "start" | "processing" | "complete" | "error"; text?: string }
+      | { type: "ai-chat"; id: string; sender: string; role: "user" | "assistant"; content: string; timestamp: number }
+      | { type: "project-deleted" }
+      | { type: "spec-created"; specId: string }
+      | { type: "spec-deleted"; specId: string };
 
     ThreadMetadata: {};
 

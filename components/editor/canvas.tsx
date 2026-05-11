@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useCallback, useState } from "react"
-import { useUpdateMyPresence, useOther } from "@liveblocks/react"
+import { useUpdateMyPresence, useOther, useEventListener } from "@liveblocks/react"
 import type { CursorsCursorProps } from "@liveblocks/react-flow"
 import {
   ReactFlow,
@@ -21,6 +21,7 @@ import "@liveblocks/react-ui/styles.css"
 import "@liveblocks/react-flow/styles.css"
 import { Minus, Plus, Maximize2, Undo2, Redo2, Check, CloudOff, Loader2 } from "lucide-react"
 import { NODE_COLORS, type CanvasNode, type CanvasEdge, type ShapeDragPayload } from "@/types/canvas"
+import { AiStatusFeedPayloadSchema } from "@/types/tasks"
 import { CanvasNodeRenderer } from "./canvas-node"
 import { CanvasEdgeRenderer } from "./canvas-edge"
 import { ShapePanel } from "./shape-panel"
@@ -32,6 +33,7 @@ import type { CanvasTemplate } from "./starter-templates"
 
 function LiveCursor({ connectionId }: CursorsCursorProps) {
   const info = useOther(connectionId, (other) => other.info)
+  const thinking = useOther(connectionId, (other) => other.presence.thinking)
   if (!info) return null
 
   const color = info.color ?? "#6b7280"
@@ -58,7 +60,9 @@ function LiveCursor({ connectionId }: CursorsCursorProps) {
         style={{
           marginTop: 2,
           marginLeft: 8,
-          display: "inline-block",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
           backgroundColor: "rgba(14, 14, 16, 0.85)",
           color: color,
           border: `1px solid ${color}`,
@@ -72,10 +76,40 @@ function LiveCursor({ connectionId }: CursorsCursorProps) {
           backdropFilter: "blur(4px)",
         }}
       >
+        {thinking && (
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            style={{ animation: "spin 1s linear infinite", flexShrink: 0 }}
+          >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+        )}
         {name}
       </div>
     </div>
   )
+}
+
+// Subscribes to ai-status broadcasts inside the RoomProvider tree and pushes
+// validated messages to workspace context so AiSidebar (outside the room) can read them.
+function AiStatusBridge() {
+  const { setAiStatusMessage } = useWorkspace()
+
+  useEventListener(({ event }) => {
+    if (event.type !== "ai-status") return
+    const parsed = AiStatusFeedPayloadSchema.safeParse(event)
+    if (!parsed.success) return
+    const { status, step, text } = parsed.data
+    setAiStatusMessage({ status, step, text })
+  })
+
+  return null
 }
 
 function SaveStatusIndicator({ saveStatus }: { saveStatus: import("@/hooks/use-autosave").SaveStatus }) {
@@ -165,7 +199,7 @@ function CanvasInner({ projectId }: CanvasInnerProps) {
   // saveStatus lives here so both the canvas indicator and navbar context
   // see the same value in the same render — no async one-cycle lag.
   const [saveStatus, setSaveStatus] = useState<import("@/hooks/use-autosave").SaveStatus>("idle")
-  const { setSaveStatus: setContextSaveStatus, manualSaveRef } = useWorkspace()
+  const { setSaveStatus: setContextSaveStatus, manualSaveRef, canvasSnapshotRef } = useWorkspace()
 
   // Keep context in sync synchronously via layout effect (before paint)
   useEffect(() => {
@@ -200,6 +234,11 @@ function CanvasInner({ projectId }: CanvasInnerProps) {
   const { manualSave } = useAutosave({ projectId, nodes, edges, onStatusChange: setSaveStatus })
   useEffect(() => {
     manualSaveRef.current = manualSave
+  })
+
+  // Keep canvas snapshot current so AiSidebar can read it for spec generation
+  useEffect(() => {
+    canvasSnapshotRef.current = { nodes: nodes as CanvasNode[], edges: edges as CanvasEdge[] }
   })
 
   useEffect(() => {
@@ -337,6 +376,7 @@ function CanvasInner({ projectId }: CanvasInnerProps) {
 
   return (
     <div className="relative h-full w-full">
+      <AiStatusBridge />
       <ReactFlow
         nodes={nodes}
         edges={edges}

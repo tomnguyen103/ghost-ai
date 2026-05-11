@@ -17,12 +17,26 @@ export async function PUT(
 
   const { projectId } = await params
 
-  const project = await prisma.project.findUnique({ where: { id: projectId } })
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: { id: true, ownerId: true },
+  })
   if (!project) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
-  if (project.ownerId !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+
+  const isOwner = project.ownerId === userId
+  if (!isOwner) {
+    const identity = await getIdentity()
+    const collab = identity?.email
+      ? await prisma.projectCollaborator.findFirst({
+          where: { projectId: project.id, email: identity.email },
+          select: { id: true },
+        })
+      : null
+    if (!collab) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
   }
 
   let canvasJson: unknown

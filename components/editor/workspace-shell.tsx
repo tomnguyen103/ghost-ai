@@ -3,14 +3,13 @@
 import { useEffect } from "react"
 import { useWorkspace } from "./workspace-context"
 import { CanvasRoom } from "./canvas-room"
-import { AiSidebar } from "./ai-sidebar"
 
 interface WorkspaceShellProps {
   project: { id: string; name: string; slug: string }
 }
 
 export function WorkspaceShell({ project }: WorkspaceShellProps) {
-  const { setWorkspaceProject, aiSidebarOpen, setAiSidebarOpen } = useWorkspace()
+  const { setWorkspaceProject, setAiSidebarOpen } = useWorkspace()
 
   useEffect(() => {
     setWorkspaceProject({ id: project.id, name: project.name, slug: project.slug })
@@ -22,10 +21,7 @@ export function WorkspaceShell({ project }: WorkspaceShellProps) {
 
   return (
     <div className="relative h-full w-full">
-      <div className="h-full w-full">
-        <CanvasRoom roomId={project.slug} projectId={project.id} />
-      </div>
-      <AiSidebar isOpen={aiSidebarOpen} onClose={() => setAiSidebarOpen(false)} />
+      <CanvasRoom roomId={project.slug} projectId={project.id} />
     </div>
   )
 }

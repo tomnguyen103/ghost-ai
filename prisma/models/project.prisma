@@ -9,6 +9,7 @@ model Project {
   description   String?
   slug          String                @unique
   collaborators ProjectCollaborator[]
+  specs         ProjectSpec[]
 
   @@index([ownerId])
   @@index([createdAt])

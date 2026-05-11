@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getLiveblocksClient } from "@/lib/liveblocks";
 
 type Params = Promise<{ projectId: string }>;
 
@@ -62,6 +63,14 @@ export async function DELETE(
   }
 
   await prisma.project.delete({ where: { id: projectId } });
+
+  // Notify collaborators currently in the room so they are redirected immediately.
+  try {
+    const client = getLiveblocksClient();
+    await client.broadcastEvent(project.slug, { type: "project-deleted" });
+  } catch {
+    // Non-fatal: collaborators will see the deletion on their next refresh.
+  }
 
   return new NextResponse(null, { status: 204 });
 }

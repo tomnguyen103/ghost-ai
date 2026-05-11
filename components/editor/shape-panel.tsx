@@ -32,7 +32,7 @@ function ShapeGhost({ shape }: { shape: NodeShape }) {
     return (
       <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <polygon
-          points="50,1 99,50 50,99 1,50"
+          points="50,0 100,50 50,100 0,50"
           fill={GHOST_FILL}
           stroke={GHOST_STROKE}
           strokeWidth={GHOST_SW}
@@ -45,7 +45,7 @@ function ShapeGhost({ shape }: { shape: NodeShape }) {
     return (
       <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <polygon
-          points="25,1 75,1 99,50 75,99 25,99 1,50"
+          points="25,0 75,0 100,50 75,100 25,100 0,50"
           fill={GHOST_FILL}
           stroke={GHOST_STROKE}
           strokeWidth={GHOST_SW}
@@ -57,18 +57,35 @@ function ShapeGhost({ shape }: { shape: NodeShape }) {
   if (shape === "cylinder") {
     return (
       <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M 1,12 L 1,88 A 49,10 0 0,1 99,88 L 99,12 Z" fill={GHOST_FILL} stroke="none" />
-        <ellipse cx="50" cy="12" rx="49" ry="10" fill={GHOST_FILL} stroke="none" />
+        {/* Body fill */}
+        <rect x="0" y="12" width="100" height="76" fill={GHOST_FILL} stroke="none" />
+        {/* Top cap fill */}
+        <ellipse cx="50" cy="12" rx="50" ry="10" fill={GHOST_FILL} stroke="none" />
+        {/* Bottom cap fill */}
+        <ellipse cx="50" cy="88" rx="50" ry="10" fill={GHOST_FILL} stroke="none" />
+        {/* Side outlines */}
         <path
-          d="M 1,12 L 1,88 A 49,10 0 0,1 99,88 L 99,12"
+          d="M 1,12 L 1,88 M 99,12 L 99,88"
           fill="none"
           stroke={GHOST_STROKE}
           strokeWidth={GHOST_SW}
           vectorEffect="non-scaling-stroke"
         />
+        {/* Top ellipse outline */}
         <ellipse
           cx="50"
           cy="12"
+          rx="49"
+          ry="10"
+          fill="none"
+          stroke={GHOST_STROKE}
+          strokeWidth={GHOST_SW}
+          vectorEffect="non-scaling-stroke"
+        />
+        {/* Bottom ellipse outline */}
+        <ellipse
+          cx="50"
+          cy="88"
           rx="49"
           ry="10"
           fill="none"

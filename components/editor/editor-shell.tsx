@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { EditorNavbar } from "./editor-navbar"
 import { ProjectSidebar } from "./project-sidebar"
@@ -23,6 +23,10 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
   const [workspaceProject, setWorkspaceProject] = useState<{ id: string; name: string; slug: string } | null>(null)
   const [aiSidebarOpen, setAiSidebarOpen] = useState(true)
   const [templatesOpen, setTemplatesOpen] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<import("@/hooks/use-autosave").SaveStatus>("idle")
+  const manualSaveRef = useRef<(() => void) | null>(null)
+  const canvasSnapshotRef = useRef<{ nodes: import("@/types/canvas").CanvasNode[]; edges: import("@/types/canvas").CanvasEdge[] }>({ nodes: [], edges: [] })
+  const [aiStatusMessage, setAiStatusMessage] = useState<import("./workspace-context").AiStatusMessage | null>(null)
   const pathname = usePathname()
   const actions = useProjectActions()
   const routeWorkspaceProject = useMemo(() => {
@@ -47,6 +51,12 @@ export function EditorShell({ children, ownedProjects, sharedProjects }: EditorS
         setAiSidebarOpen,
         templatesOpen,
         setTemplatesOpen,
+        saveStatus,
+        setSaveStatus,
+        manualSaveRef,
+        canvasSnapshotRef,
+        aiStatusMessage,
+        setAiStatusMessage,
       }}
     >
       <ProjectDialogsContext.Provider value={actions}>

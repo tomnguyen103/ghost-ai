@@ -9,7 +9,7 @@ Complete the existing AI sidebar placeholder and turn it into a proper floating 
 
 2. Add the sidebar header.
    - title: `AI Workspace`
-   - subtitle: `Collaborate with Development Plan tools`
+   - subtitle: `Collaborate with Development Plan Tools`
    - small bot icon
    - close button aligned to the right
    - use `text-primary-text` for the title

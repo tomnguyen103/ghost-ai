@@ -9,7 +9,7 @@ import { NODE_COLORS } from "@/types/canvas";
 
 const AI_USER_ID = "development-plan-tools-ai";
 const AI_USER_INFO = {
-  name: "Development Plan tools",
+  name: "Development Plan Tools",
   avatar: "",
   color: "#a78bfa",
 };
@@ -142,7 +142,7 @@ export const designAgent = task({
     const client = getLiveblocksClient();
 
     await setAiPresence(client, roomId, { x: 400, y: 300 }, true);
-    await broadcastStatus(client, roomId, "Development Plan tools is thinking…", "start");
+    await broadcastStatus(client, roomId, "Development Plan Tools is thinking…", "start");
 
     let currentNodes: readonly CanvasNode[] = [];
     let currentEdges: readonly CanvasEdge[] = [];
@@ -182,7 +182,7 @@ export const designAgent = task({
       await broadcastStatus(
         client,
         roomId,
-        "Development Plan tools encountered an error generating the design.",
+        "Development Plan Tools encountered an error generating the design.",
         "error"
       );
       await setAiPresence(client, roomId, null, false, PRESENCE_TTL_MS);
@@ -193,14 +193,14 @@ export const designAgent = task({
       await broadcastStatus(
         client,
         roomId,
-        "Development Plan tools did not produce any canvas actions.",
+        "Development Plan Tools did not produce any canvas actions.",
         "error"
       );
       await setAiPresence(client, roomId, null, false, PRESENCE_TTL_MS);
       return { actionCount: 0, addedNodes: 0, addedEdges: 0 };
     }
 
-    await broadcastStatus(client, roomId, "Development Plan tools is updating the canvas…", "processing");
+    await broadcastStatus(client, roomId, "Development Plan Tools is updating the canvas…", "processing");
 
     try {
       await mutateFlow<CanvasNode, CanvasEdge>({ client, roomId }, (flow) => {
@@ -274,12 +274,12 @@ export const designAgent = task({
         }
       });
     } catch (err) {
-      await broadcastStatus(client, roomId, "Development Plan tools failed to update the canvas.", "error");
+      await broadcastStatus(client, roomId, "Development Plan Tools failed to update the canvas.", "error");
       await setAiPresence(client, roomId, null, false, PRESENCE_TTL_MS);
       throw err;
     }
 
-    await broadcastStatus(client, roomId, "Development Plan tools finished the design.", "complete");
+    await broadcastStatus(client, roomId, "Development Plan Tools finished the design.", "complete");
     await setAiPresence(client, roomId, null, false, PRESENCE_TTL_MS);
 
     const addedNodes = toolCalls.filter((c) => c.toolName === "add_node").length;
@@ -334,7 +334,7 @@ Edges: ${JSON.stringify(
       )}`
     : "The canvas is currently empty.";
 
-  return `You are Development Plan tools, an expert system architect. The user will describe a system or architecture and you must visualize it on a collaborative canvas by calling the available tools.
+  return `You are Development Plan Tools, an expert system architect. The user will describe a system or architecture and you must visualize it on a collaborative canvas by calling the available tools.
 
 ${existingContext}
 
